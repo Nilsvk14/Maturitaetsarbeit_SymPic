@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:maturaarbeit_2025/theme.dart';
+import 'package:maturaarbeit_2025/views/home.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MainApp());
 }
 
@@ -9,12 +18,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    final materialTheme = MaterialTheme(ThemeData.light().textTheme);
+    return MaterialApp(
+      title: 'Sympic',
+      debugShowCheckedModeBanner: false,
+      theme: materialTheme.light(),
+      themeMode: ThemeMode.system,
+      home: const HomeView(),
     );
   }
 }
