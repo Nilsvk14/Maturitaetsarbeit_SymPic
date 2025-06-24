@@ -11,15 +11,20 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FloatingActionButton(
-        child: Text("Speech to picto"),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SpeechView()),
-          );
-        },
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton(
+            child: Icon(Icons.start, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SpeechView()),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maturaarbeit_2025/theme.dart';
+import 'package:maturaarbeit_2025/theme_2.dart';
 import 'package:maturaarbeit_2025/views/home.dart';
 
 void main() {
