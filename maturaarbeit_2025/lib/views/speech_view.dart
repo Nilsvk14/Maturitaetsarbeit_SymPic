@@ -31,11 +31,7 @@ class _SpeechViewState extends State<SpeechView> {
                   MaterialPageRoute(builder: (context) => const InfoView()),
                 );
               },
-              icon: Icon(
-                Icons.info_outline,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                size: 30,
-              ),
+              icon: Icon(Icons.info_outline),
             ),
           ],
           bottom: const TabBar(
