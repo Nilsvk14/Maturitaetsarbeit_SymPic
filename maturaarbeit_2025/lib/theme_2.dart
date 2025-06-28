@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 
+// ColorScheme made with:
+// https://material-foundation.github.io/material-theme-builder/
+
 class MaterialTheme {
   final TextTheme textTheme;
 
