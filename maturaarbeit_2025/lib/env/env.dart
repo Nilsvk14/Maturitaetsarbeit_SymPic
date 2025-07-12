@@ -7,4 +7,8 @@ part 'env.g.dart';
 final class Env {
   @EnviedField(varName: 'API_KEY', obfuscate: true)
   static final String apiKey = _Env.apiKey;
+  @EnviedField(varName: 'OPENROUTER_MODEL')
+  static final String openRouterModel = _Env.openRouterModel;
+  @EnviedField(varName: 'OPENROUTER_ENDPOINT', obfuscate: true)
+  static final String openRouterEndpoint = _Env.openRouterEndpoint;
 }

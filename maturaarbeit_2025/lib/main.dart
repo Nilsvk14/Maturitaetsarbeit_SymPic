@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maturaarbeit_2025/theme_2.dart';
+import 'package:maturaarbeit_2025/theme.dart';
 import 'package:maturaarbeit_2025/views/home.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,16 @@ class MainApp extends StatelessWidget {
     final materialTheme = MaterialTheme(ThemeData.light().textTheme);
     return MaterialApp(
       title: 'Sympic',
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'), // English
+        Locale('de'), // German
+        Locale('fr'), // French
+      ],
       debugShowCheckedModeBanner: false,
       theme: materialTheme.light(),
       themeMode: ThemeMode.system,

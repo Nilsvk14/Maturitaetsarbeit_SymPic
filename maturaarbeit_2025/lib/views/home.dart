@@ -16,7 +16,9 @@ class _HomeViewState extends State<HomeView> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FloatingActionButton(
+            heroTag: "simple_speech",
             child: Icon(Icons.start, size: 30),
+
             onPressed: () {
               Navigator.push(
                 context,

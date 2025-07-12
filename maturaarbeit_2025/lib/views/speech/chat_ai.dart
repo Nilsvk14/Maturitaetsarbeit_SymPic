@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:maturaarbeit_2025/views/speech/chat_ai_service.dart';
 import 'dart:convert';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:http/http.dart' as http;
 
-class SimpleSpeech extends StatefulWidget {
-  const SimpleSpeech({super.key});
+class ChatAiSpeech extends StatefulWidget {
+  const ChatAiSpeech({super.key});
 
   @override
-  State<SimpleSpeech> createState() => _SimpleSpeechState();
+  State<ChatAiSpeech> createState() => _ChatAiSpeechState();
 }
 
-class _SimpleSpeechState extends State<SimpleSpeech> {
+class _ChatAiSpeechState extends State<ChatAiSpeech> {
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
   bool _loading = false;
   bool _canListen = true;
-  List<String> _spokenWords = [];
   final List<SymbolData> _symbols = [];
 
   @override
@@ -42,7 +42,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
       if (!_canListen) return;
 
       _lastWords = '';
-      _spokenWords.clear();
+
       await _speechToText.listen(onResult: _onSpeechResult);
       setState(() {});
 
@@ -80,14 +80,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
   void _handleSpeechFinished() async {
     if (_loading) return;
 
-    _spokenWords = _lastWords
-        .toLowerCase()
-        .trim()
-        .split(RegExp(r'\s+'))
-        .where((word) => word.isNotEmpty)
-        .toList();
-
-    if (_spokenWords.isEmpty) {
+    if (_lastWords.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -107,7 +100,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
       _canListen = false;
     });
 
-    await _getArasaacImages(_spokenWords);
+    await _getArasaacImages(_lastWords);
 
     setState(() {
       _loading = false;
@@ -115,10 +108,12 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
     });
   }
 
-  Future<void> _getArasaacImages(List<String> words) async {
+  Future<void> _getArasaacImages(String sentence) async {
     _symbols.clear();
-    print(words);
-    for (final word in words) {
+
+    final result = await ai(sentence);
+
+    for (final word in result) {
       try {
         final response = await http.get(
           Uri.parse(
@@ -211,6 +206,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0, top: 8),
                 child: FloatingActionButton(
+                  heroTag: null,
                   onPressed: _canListen
                       ? (_speechToText.isNotListening
                             ? _startListening
