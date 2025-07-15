@@ -159,65 +159,177 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           if (_loading)
-            LoadingAnimationWidget.stretchedDots(
-              color: Theme.of(context).colorScheme.primary,
-              size: MediaQuery.of(context).size.width / 3,
+            Expanded(
+              flex: 4,
+              child: LoadingAnimationWidget.stretchedDots(
+                color: Theme.of(context).colorScheme.primary,
+                size: MediaQuery.of(context).size.width / 3,
+              ),
             )
           else
             !_speechToText.isListening
                 ? _symbols.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    "So funktioniert's:",
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  Text(
-                                    "1. Auf das Mikrofon drücken",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    "2. Sprechen",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    "3. Übersetzung wird angezeigt",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ],
+                      ? Expanded(
+                          flex: 2,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineLarge
+                                              ?.copyWith(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.primary,
+                                              ),
+                                          children: const [
+                                            TextSpan(text: "Übersetzung "),
+                                            TextSpan(
+                                              text: "mit",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(text: " KI"),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 12.0,
+                                        right: 12,
+                                        bottom: 40,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              "Swipe nach rechts, um die Bildgenerierung auszuprobieren",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color: Colors.grey[700],
+                                                  ),
+                                              textAlign: TextAlign.center,
+                                              softWrap: true,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 35,
+                                ),
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "So funktioniert's:",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        Text(
+                                          "1. Kurz auf das Mikrofon drücken.",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        Text(
+                                          "2. Sag deinen Satz.",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        Text(
+                                          "3. KI verbessert deinen Satz.",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        Text(
+                                          "4. Passende Piktogramme werden dir angezeigt.",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         )
-                      : Expanded(child: SymbolGrid(symbols: _symbols))
-                : LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).colorScheme.primary,
-                    size: MediaQuery.of(context).size.width / 2.5,
+                      : Expanded(flex: 8, child: SymbolGrid(symbols: _symbols))
+                : Expanded(
+                    flex: 4,
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: Theme.of(context).colorScheme.primary,
+                      size: MediaQuery.of(context).size.width / 2.5,
+                    ),
                   ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0, top: 8),
-                child: FloatingActionButton(
-                  heroTag: null,
-                  onPressed: _canListen
-                      ? (_speechToText.isNotListening
-                            ? _startListening
-                            : _stopListening)
-                      : null,
-                  child: Icon(
-                    _speechToText.isNotListening ? Icons.mic : Icons.mic_off,
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 13.0, top: 2),
+                  child: FloatingActionButton(
+                    heroTag: "chat_ai",
+                    onPressed: _canListen
+                        ? (_speechToText.isNotListening
+                              ? _startListening
+                              : _stopListening)
+                        : null,
+                    child: Icon(
+                      _speechToText.isNotListening ? Icons.mic : Icons.mic_off,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

@@ -9,7 +9,14 @@ class InfoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Info")),
+      appBar: AppBar(
+        title: Text(
+          "Info",
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      ),
       body: const Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [AppVersion(), InfoListView()],
@@ -46,16 +53,41 @@ class _AppVersionState extends State<AppVersion> {
               child: Center(
                 child: Hero(
                   tag: 'title',
-                  child: SizedBox(height: 140, child: Placeholder()),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width / 2,
+                    child: Image(
+                      image: AssetImage('assets/logo_sympic_simple_2.png'),
+                    ),
+                  ),
                 ),
               ),
             ),
-            Center(child: Text('Version $_version')),
+            Center(
+              child: Text(
+                'Version $_version',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
+              ),
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 70.0),
+              padding: const EdgeInsets.only(top: 60.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [Text("Entwickler"), Text("Nils von Kampen")],
+                children: [
+                  Text(
+                    "Entwickler",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  Text(
+                    "Nils von Kampen",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -83,7 +115,9 @@ class InfoListView extends StatelessWidget {
         children: <Widget>[
           InkWell(
             onTap: () {
-              Share.share("Hello world.");
+              SharePlus.instance.share(
+                ShareParams(text: "Schau dir die SymPic App an: Link"),
+              );
             },
             child: Row(
               children: [
@@ -102,8 +136,21 @@ class InfoListView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Divider(),
-                        Text("App teilen"),
-                        Text("Teilennnnn"),
+                        Text(
+                          "App teilen",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+
+                        Text(
+                          "Teile die App mit Kollegen und Freunden, um gemeinsam von SymPic zu profitieren!",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                         const Divider(),
                       ],
                     ),
@@ -132,8 +179,20 @@ class InfoListView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Feedback"),
-                        Text("Feedback informationenenennene"),
+                        Text(
+                          "Feedback",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(
+                          "Gib mir dein wertvolles Feedback, damit ich die App kontinuierlich verbessern kann.",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                         const Divider(),
                       ],
                     ),
@@ -162,8 +221,20 @@ class InfoListView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Datenschutzbestimmung"),
-                        Text("finde hier..."),
+                        Text(
+                          "Datenschutzbestimmungen",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(
+                          "Finde hier unsere Datenschutzbestimmungen, um zu erfahren, wie wir deine Daten schützen und nutzen.",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                         const Divider(),
                       ],
                     ),
@@ -174,9 +245,13 @@ class InfoListView extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text("....")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Link zur Maturaarbeit folgt, sobald dieser vorhanden ist.",
+                  ),
+                ),
+              );
             },
             child: Row(
               children: [
@@ -194,8 +269,20 @@ class InfoListView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("AGB INfo"),
-                        Text("Keine Ahnung"),
+                        Text(
+                          "Weitere Informationen",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(
+                          "SymPic wurde im Rahmen einer Maturaarbeit ins Leben gerufen. Hier findest du die wissenschaftliche Arbeit.",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                         const Divider(),
                       ],
                     ),
@@ -210,7 +297,7 @@ class InfoListView extends StatelessWidget {
   }
 }
 
-final Uri _url = Uri.parse('mailto:anysum.info@gmail.com');
+final Uri _url = Uri.parse('mailto:nils.vonkampen@ksk.ch');
 
 Future<void> _launchUrl() async {
   if (!await launchUrl(_url)) {

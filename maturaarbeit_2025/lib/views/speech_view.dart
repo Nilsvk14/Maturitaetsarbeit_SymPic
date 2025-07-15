@@ -18,12 +18,25 @@ class _SpeechViewState extends State<SpeechView> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: Text("SymPic"),
+          title: Hero(
+            tag: "title",
+            child: Center(
+              child: SizedBox(
+                height: 55,
+                child: Image(
+                  image: AssetImage('assets/logo_sympic_simple_2.png'),
+                ),
+              ),
+            ),
+          ),
           actions: [
             IconButton(
               onPressed: () {
@@ -32,7 +45,10 @@ class _SpeechViewState extends State<SpeechView> {
                   MaterialPageRoute(builder: (context) => const InfoView()),
                 );
               },
-              icon: Icon(Icons.info_outline),
+              icon: Icon(
+                Icons.info_outline,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
           ],
           bottom: const TabBar(

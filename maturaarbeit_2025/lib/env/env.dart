@@ -11,4 +11,6 @@ final class Env {
   static final String openRouterModel = _Env.openRouterModel;
   @EnviedField(varName: 'OPENROUTER_ENDPOINT', obfuscate: true)
   static final String openRouterEndpoint = _Env.openRouterEndpoint;
+  @EnviedField(varName: 'REPLICATE_API_KEY', obfuscate: true)
+  static final String replicateKey = _Env.replicateKey;
 }
