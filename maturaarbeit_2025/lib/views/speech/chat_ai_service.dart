@@ -40,6 +40,8 @@ Use only simple conjunctions: “and”, “or”, “but”.
 
 If the sentence is a question, add a question mark.
 
+Use ss instead of sharp S.
+
 Do not use proper names.
 
 If the given sentence already complies with these rules, leave it unchanged.

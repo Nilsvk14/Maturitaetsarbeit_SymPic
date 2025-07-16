@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -15,6 +16,7 @@ class SimpleSpeech extends StatefulWidget {
 class _SimpleSpeechState extends State<SimpleSpeech> {
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
+  bool _isOnline = false;
   String _lastWords = '';
   bool _loading = false;
   bool _canListen = true;
@@ -25,6 +27,17 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
   void initState() {
     super.initState();
     _initSpeech();
+    _checkConnectivity();
+  }
+
+  Future<void> _checkConnectivity() async {
+    final result = await (Connectivity().checkConnectivity());
+    if (result.contains(ConnectivityResult.mobile) ||
+        result.contains(ConnectivityResult.wifi)) {
+      setState(() {
+        _isOnline = true;
+      });
+    }
   }
 
   void _initSpeech() async {
@@ -117,25 +130,40 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
 
   Future<void> _getArasaacImages(List<String> words) async {
     _symbols.clear();
-    print(words);
-    for (final word in words) {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            'https://api.arasaac.org/api/pictograms/de/bestsearch/$word',
+    if (!_isOnline) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Keine Verbindung möglich. Bitte überprüfe deine Internetverbindung.',
+            ),
           ),
         );
+        setState(() {
+          _loading = false;
+          _canListen = true;
+        });
+      }
+    } else {
+      try {
+        for (final word in words) {
+          final response = await http.get(
+            Uri.parse(
+              'https://api.arasaac.org/api/pictograms/de/bestsearch/$word',
+            ),
+          );
 
-        if (response.statusCode == 200) {
-          final List<dynamic> data = json.decode(response.body);
-          if (data.isNotEmpty) {
-            final id = data.first['_id'];
-            final imageUrl =
-                'https://static.arasaac.org/pictograms/$id/${id}_300.png';
-            _symbols.add(SymbolData(word: word, imageUrl: imageUrl));
+          if (response.statusCode == 200) {
+            final List<dynamic> data = json.decode(response.body);
+            if (data.isNotEmpty) {
+              final id = data.first['_id'];
+              final imageUrl =
+                  'https://static.arasaac.org/pictograms/$id/${id}_300.png';
+              _symbols.add(SymbolData(word: word, imageUrl: imageUrl));
+            }
+          } else {
+            _symbols.add(SymbolData(word: word, imageUrl: ''));
           }
-        } else {
-          _symbols.add(SymbolData(word: word, imageUrl: ''));
         }
       } catch (e) {
         if (mounted) {

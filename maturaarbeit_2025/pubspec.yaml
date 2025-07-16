@@ -7,6 +7,7 @@ environment:
   sdk: ^3.8.0
 
 dependencies:
+  connectivity_plus: ^6.1.4
   envied: ^1.1.1
   flutter:
     sdk: flutter

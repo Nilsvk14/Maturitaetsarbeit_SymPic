@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maturaarbeit_2025/views/info.dart';
 import 'package:maturaarbeit_2025/views/speech/chat_ai.dart';
+import 'package:maturaarbeit_2025/views/speech/image_ai.dart';
 import 'package:maturaarbeit_2025/views/speech/simple_speech.dart';
 
 class SpeechView extends StatefulWidget {
@@ -60,7 +61,7 @@ class _SpeechViewState extends State<SpeechView> {
           ),
         ),
         body: const TabBarView(
-          children: [SimpleSpeech(), ChatAiSpeech(), Icon(Icons.photo_library)],
+          children: [SimpleSpeech(), ChatAiSpeech(), ImageAiSpeech()],
         ),
       ),
     );
