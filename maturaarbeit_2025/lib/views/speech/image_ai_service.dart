@@ -43,11 +43,11 @@ If the sentence is a question, add a question mark.
 Do not use proper names.
 
 If the given sentence already complies with these rules, leave it unchanged.
-Output the result only in the format: [["word1", "word2", "word3"], ["word1", "word2", "word3"]]
+Output the result only in the format: [["wordx", "wordy", "wordz", ...], ["wordx", "wordy", "wordz", ...]]
 Use German as the language for the first array and English as the language for the second array.
 Use the same amount of words for both translation, so that wordx is also wordx in the other array.
 For the English translation of verbs, use the infinitive without "to".
-For the German translation use ss instead of sharp S.
+For the German translation use ss instead of sharp S and ALWAYS THE INFINITVE FORM OF VERBS.
 """,
       },
       {"role": "user", "content": "Simplify the following sentence: $text"},
@@ -68,6 +68,7 @@ For the German translation use ss instead of sharp S.
       final data = jsonDecode(response.body);
       final content = data["choices"][0]["message"]["content"] as String;
       final List<dynamic> result = jsonDecode(content);
+      print(result);
 
       final List<String> aacWords = List<String>.from(result[0]);
       final List<String> translatedPrompt = List<String>.from(result[1]);
@@ -97,9 +98,10 @@ For the German translation use ss instead of sharp S.
 }
 
 Future<String> imageCreation(String word) async {
-  const timeout = Duration(seconds: 30);
+  const timeout = Duration(seconds: 60);
   final replicateKey = Env.replicateKey;
-  const endpoint = 'https://api.replicate.com/v1/predictions';
+  const endpoint =
+      'https://api.replicate.com/v1/models/ideogram-ai/ideogram-v2a-turbo/predictions';
 
   if (replicateKey.isEmpty) {
     throw Exception("OpenRouter API credentials missing.");
@@ -108,25 +110,14 @@ Future<String> imageCreation(String word) async {
   final headers = {
     "Authorization": "Token $replicateKey",
     "Content-Type": "application/json",
-    "Prefer": "wait=30",
+    "Prefer": "wait",
   };
 
   final prompt = {
-    "version":
-        "stability-ai/sdxl:7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc",
     "input": {
-      "width": 512,
-      "height": 512,
       "prompt":
-          "Flat pictogram of '$word', ARASAAC style, white background, minimal line-art, simple colors",
-      "refine": "no_refiner",
-      "scheduler": "K_EULER",
-      "num_outputs": 1,
-      "guidance_scale": 12,
-      "apply_watermark": false,
-      "high_noise_frac": 0.6,
-      "negative_prompt": "shading, background, photo, 3D",
-      "num_inference_steps": 30,
+          "Flat vector icon of '$word', black outline, simple colors, white background, no text, no shadows, centered composition, simple and clear design, no decoration, for augmentative and alternative communication (AAC)",
+      "aspect_ratio": "1:1",
     },
   };
 
@@ -138,10 +129,10 @@ Future<String> imageCreation(String word) async {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final data = jsonDecode(response.body);
       final output = data["output"];
+      print(output);
       print(data["status"]);
-      if (output is List && output.isNotEmpty) {
-        final imageUrl = output.first.toString();
-        return imageUrl;
+      if (output != "") {
+        return output;
       } else {
         throw Exception("No image URL returned by Replicate.");
       }

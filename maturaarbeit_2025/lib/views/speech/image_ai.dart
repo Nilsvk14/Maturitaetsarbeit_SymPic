@@ -46,6 +46,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
   }
 
   void _startListening() async {
+    if (!mounted) return;
     final errorSnackBar = SnackBar(
       content: Text(
         'Spracheingabe nicht möglich. Bitte überprüfe die Berechtigungen der App.',
@@ -57,6 +58,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
       _lastWords = '';
 
       await _speechToText.listen(onResult: _onSpeechResult);
+      if (!mounted) return;
       setState(() {});
 
       // Timeout, if nothing is said
@@ -64,6 +66,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
         if (_speechToText.isListening && _lastWords.trim().isEmpty) {
           await _speechToText.stop();
           _handleSpeechFinished();
+          if (!mounted) return;
           setState(() {
             _loading = false;
             _canListen = true;
@@ -77,6 +80,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
 
   void _stopListening() async {
     if (_speechToText.isListening) {
+      if (!mounted) return;
       await _speechToText.stop();
     }
     _handleSpeechFinished();
@@ -84,7 +88,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
 
   void _onSpeechResult(SpeechRecognitionResult result) {
     _lastWords = result.recognizedWords;
-
+    if (!mounted) return;
     if (_speechToText.lastStatus == 'notListening') {
       _handleSpeechFinished();
     }
@@ -92,7 +96,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
 
   void _handleSpeechFinished() async {
     if (_loading) return;
-
+    if (!mounted) return;
     if (_lastWords.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -107,14 +111,14 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
       }
       return;
     }
-
+    if (!mounted) return;
     setState(() {
       _loading = true;
       _canListen = false;
     });
 
     await _getArasaacImages(_lastWords);
-
+    if (!mounted) return;
     setState(() {
       _loading = false;
       _canListen = true;
@@ -183,7 +187,7 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
         }
       }
     }
-
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -196,9 +200,25 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
           if (_loading)
             Expanded(
               flex: 4,
-              child: LoadingAnimationWidget.stretchedDots(
-                color: Theme.of(context).colorScheme.primary,
-                size: MediaQuery.of(context).size.width / 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.stretchedDots(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: MediaQuery.of(context).size.width / 3,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "Die Piktogramme werden generiert. Dieser Vorgang kann einige Sekunden dauern.",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                    ),
+                  ),
+                ],
               ),
             )
           else
@@ -348,9 +368,24 @@ class _ImageAiSPeechState extends State<ImageAiSpeech> {
                       : Expanded(flex: 8, child: SymbolGrid(symbols: _symbols))
                 : Expanded(
                     flex: 4,
-                    child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: MediaQuery.of(context).size.width / 2.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LoadingAnimationWidget.staggeredDotsWave(
+                          color: Theme.of(context).colorScheme.primary,
+                          size: MediaQuery.of(context).size.width / 2.5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            "Sage deinen Satz.",
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: Colors.grey[700]),
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
           Expanded(
@@ -405,7 +440,6 @@ class SymbolGrid extends StatelessWidget {
         childAspectRatio: 0.9,
       ),
       itemBuilder: (context, index) {
-        print(symbols.length);
         final symbol = symbols[index];
         return Card(
           elevation: 3,

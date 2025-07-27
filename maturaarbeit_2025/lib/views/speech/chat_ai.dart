@@ -17,7 +17,7 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
-  bool _loading = false;
+  bool _loading1 = false;
   bool _canListen = true;
   final List<SymbolData> _symbols = [];
 
@@ -51,8 +51,9 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
         if (_speechToText.isListening && _lastWords.trim().isEmpty) {
           await _speechToText.stop();
           _handleSpeechFinished();
+          if (!mounted) return;
           setState(() {
-            _loading = false;
+            _loading1 = false;
             _canListen = true;
           });
         }
@@ -78,7 +79,7 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
   }
 
   void _handleSpeechFinished() async {
-    if (_loading) return;
+    if (_loading1) return;
 
     if (_lastWords.isEmpty) {
       if (mounted) {
@@ -88,32 +89,33 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
           ),
         );
         setState(() {
-          _loading = false;
+          _loading1 = false;
           _canListen = true;
         });
       }
       return;
     }
-
+    if (!mounted) return;
     setState(() {
-      _loading = true;
+      _loading1 = true;
       _canListen = false;
     });
 
     await _getArasaacImages(_lastWords);
-
+    if (!mounted) return;
     setState(() {
-      _loading = false;
+      _loading1 = false;
       _canListen = true;
     });
   }
 
   Future<void> _getArasaacImages(String sentence) async {
     _symbols.clear();
-
+    if (!mounted) return;
     final result = await ai(sentence);
 
     for (final word in result) {
+      if (!mounted) return;
       try {
         final response = await http.get(
           Uri.parse(
@@ -142,13 +144,13 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
             ),
           );
           setState(() {
-            _loading = false;
+            _loading1 = false;
             _canListen = true;
           });
         }
       }
     }
-
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -158,12 +160,28 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          if (_loading)
+          if (_loading1)
             Expanded(
               flex: 4,
-              child: LoadingAnimationWidget.stretchedDots(
-                color: Theme.of(context).colorScheme.primary,
-                size: MediaQuery.of(context).size.width / 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.stretchedDots(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: MediaQuery.of(context).size.width / 3,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "Dein Satz wird verbessert. Das kann etwas dauern.",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                    ),
+                  ),
+                ],
               ),
             )
           else
@@ -304,9 +322,24 @@ class _ChatAiSpeechState extends State<ChatAiSpeech> {
                       : Expanded(flex: 8, child: SymbolGrid(symbols: _symbols))
                 : Expanded(
                     flex: 4,
-                    child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: MediaQuery.of(context).size.width / 2.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LoadingAnimationWidget.staggeredDotsWave(
+                          color: Theme.of(context).colorScheme.primary,
+                          size: MediaQuery.of(context).size.width / 2.5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            "Sage deinen Satz.",
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: Colors.grey[700]),
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
           Expanded(

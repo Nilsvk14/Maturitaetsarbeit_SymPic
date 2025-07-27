@@ -46,6 +46,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
   }
 
   void _startListening() async {
+    if (!mounted) return;
     final errorSnackBar = SnackBar(
       content: Text(
         'Spracheingabe nicht möglich. Bitte überprüfe die Berechtigungen der App.',
@@ -53,7 +54,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
     );
     if (_speechEnabled) {
       if (!_canListen) return;
-
+      if (!mounted) return;
       _lastWords = '';
       _spokenWords.clear();
       await _speechToText.listen(onResult: _onSpeechResult);
@@ -64,6 +65,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
         if (_speechToText.isListening && _lastWords.trim().isEmpty) {
           await _speechToText.stop();
           _handleSpeechFinished();
+          if (!mounted) return;
           setState(() {
             _loading = false;
             _canListen = true;
@@ -71,6 +73,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
         }
       });
     } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
     }
   }
@@ -79,6 +82,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
     if (_speechToText.isListening) {
       await _speechToText.stop();
     }
+    if (!mounted) return;
     _handleSpeechFinished();
   }
 
@@ -92,7 +96,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
 
   void _handleSpeechFinished() async {
     if (_loading) return;
-
+    if (!mounted) return;
     _spokenWords = _lastWords
         .toLowerCase()
         .trim()
@@ -114,14 +118,14 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
       }
       return;
     }
-
+    if (!mounted) return;
     setState(() {
       _loading = true;
       _canListen = false;
     });
 
     await _getArasaacImages(_spokenWords);
-
+    if (!mounted) return;
     setState(() {
       _loading = false;
       _canListen = true;
@@ -181,7 +185,7 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
         }
       }
     }
-
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -194,9 +198,25 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
           if (_loading)
             Expanded(
               flex: 4,
-              child: LoadingAnimationWidget.stretchedDots(
-                color: Theme.of(context).colorScheme.primary,
-                size: MediaQuery.of(context).size.width / 3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.stretchedDots(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: MediaQuery.of(context).size.width / 3,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "Deine Piktogramme werden geladen.",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
+                      textAlign: TextAlign.center,
+                      softWrap: true,
+                    ),
+                  ),
+                ],
               ),
             )
           else
@@ -328,9 +348,24 @@ class _SimpleSpeechState extends State<SimpleSpeech> {
                       : Expanded(flex: 8, child: SymbolGrid(symbols: _symbols))
                 : Expanded(
                     flex: 4,
-                    child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: Theme.of(context).colorScheme.primary,
-                      size: MediaQuery.of(context).size.width / 2.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LoadingAnimationWidget.staggeredDotsWave(
+                          color: Theme.of(context).colorScheme.primary,
+                          size: MediaQuery.of(context).size.width / 2.5,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            "Sage deinen Satz.",
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: Colors.grey[700]),
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
           Expanded(

@@ -203,14 +203,14 @@ class InfoListView extends StatelessWidget {
           ),
           InkWell(
             onTap: () {
-              _launchUrl2();
+              _launchUrl3();
             },
             child: Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Icon(
-                    Icons.link,
+                    Icons.image,
                     size: 35,
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -222,14 +222,14 @@ class InfoListView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Datenschutzbestimmungen",
+                          "Piktogramme",
                           style: TextStyle(
                             fontSize: 18,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                         Text(
-                          "Finde hier unsere Datenschutzbestimmungen, um zu erfahren, wie wir deine Daten schützen und nutzen.",
+                          "Piktogramm-Urheber Sergio Palao. Herkunft: ARASAAC (http://www.arasaac.org). Lizenz: CC (BY-NC-SA). Eigentümer: Regierung von Aragon (Spanien)",
                           style: TextStyle(
                             fontSize: 14,
                             color: Theme.of(context).colorScheme.secondary,
@@ -305,12 +305,10 @@ Future<void> _launchUrl() async {
   }
 }
 
-final Uri _url2 = Uri.parse(
-  'https://redir.originstamp.com/resources/docs/legal/privacy-policy/current',
-);
+final Uri _urlArasaac = Uri.parse('http://www.arasaac.org');
 
-Future<void> _launchUrl2() async {
-  if (!await launchUrl(_url2)) {
-    throw Exception('Could not launch $_url2');
+Future<void> _launchUrl3() async {
+  if (!await launchUrl(_urlArasaac)) {
+    throw Exception('Could not launch $_urlArasaac');
   }
 }
