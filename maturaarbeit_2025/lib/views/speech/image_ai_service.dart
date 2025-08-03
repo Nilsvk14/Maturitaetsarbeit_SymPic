@@ -45,7 +45,7 @@ Do not use proper names.
 If the given sentence already complies with these rules, leave it unchanged.
 Output the result only in the format: [["wordx", "wordy", "wordz", ...], ["wordx", "wordy", "wordz", ...]]
 Use German as the language for the first array and English as the language for the second array.
-Use the same amount of words for both translation, so that wordx is also wordx in the other array.
+Use the same number of words for both translations, so that wordx is also wordx in the other array.
 For the English translation of verbs, use the infinitive without "to".
 For the German translation use ss instead of sharp S and ALWAYS THE INFINITVE FORM OF VERBS.
 """,

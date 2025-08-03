@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:maturaarbeit_2025/env/env.dart';
 
-/// Sends a request to the OpenRouter API using a AAC-simplification prompt.
-/// Takes a `text` string and returns the simplified sentence as JSON string array.
 Future<List<String>> ai(String text) async {
   const timeout = Duration(seconds: 30);
 
